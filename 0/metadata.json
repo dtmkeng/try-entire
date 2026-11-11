@@ -43,5 +43,18 @@
   },
   "session_metrics": {
     "turn_count": 1
+  },
+  "summary": {
+    "intent": "Create a file named hello-entire.md containing a short note explaining that it is the user's first Entire checkpoint.",
+    "outcome": "Created and updated hello-entire.md with the requested note about the first Entire checkpoint.",
+    "learnings": {
+      "repo": [],
+      "code": [],
+      "workflow": []
+    },
+    "friction": [
+      "Creating/updating hello-entire.md took two write_file attempts separated by a read_file call, suggesting the file may have already existed or required an overwrite after reading."
+    ],
+    "open_items": []
   }
 }
