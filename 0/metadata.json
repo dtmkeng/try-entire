@@ -1,0 +1,49 @@
+{
+  "cli_version": "0.13.2",
+  "checkpoint_id": "01M75M2179FP1YNRV5C2A54N7F",
+  "session_id": "14176c05-6371-4c85-a5d1-94844acd1e54",
+  "strategy": "manual-commit",
+  "created_at": "2026-11-11T15:36:39.658859Z",
+  "branch": "main",
+  "checkpoints_count": 2,
+  "save_step_count": 2,
+  "files_touched": [
+    "hello-entire.md"
+  ],
+  "agent": "Antigravity",
+  "model": "gemini-4-argon-high",
+  "turn_id": "a3ddeb9a40e2",
+  "checkpoint_transcript_start": 8,
+  "transcript_lines_at_start": 8,
+  "token_usage": {
+    "input_tokens": 22338,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 46065,
+    "output_tokens": 659,
+    "api_call_count": 5
+  },
+  "session_token_usage": {
+    "input_tokens": 41477,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 77819,
+    "output_tokens": 1047,
+    "api_call_count": 9
+  },
+  "redaction": {
+    "replacements": 0,
+    "layers": {
+      "betterleaks": 0,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 0,
+      "credentialed_uri": 0,
+      "entropy": 0,
+      "key_context": 0,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  },
+  "session_metrics": {
+    "turn_count": 3
+  }
+}
