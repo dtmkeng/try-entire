@@ -1,0 +1,26 @@
+Set up entire-brain in this repository and start using it for our work.
+
+Check that the Entire CLI, Git 2.36 or later, and entire-graph are
+installed. Install any missing tools using the official instructions
+at https://github.com/entireio/entire-brain#install.
+
+Make sure this is a Git repository with at least one commit. If there
+are uncommitted changes that block setup, tell me what needs attention.
+
+Run `entire brain setup --no-backfill` to build the project's memory
+and add the agent instructions. Preserve my existing instructions
+outside the managed blocks in AGENTS.md and CLAUDE.md.
+Ask me before running a memory backfill, because it uses a coding
+agent and can incur token charges.
+
+Run `entire brain status --verbose` and explain anything missing or
+out of date. Read `.entire/agent-guide.md`, then run
+`entire brain overview` and summarize what entire-brain knows about this project.
+
+For my next task, use `entire brain brief` to gather relevant context
+before making changes. Check the supporting sources and use
+entire-graph to find and inspect the code.
+
+---
+
+commit ?
