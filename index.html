@@ -178,7 +178,7 @@
     </form>
 
     <div id="result-box" class="result-box" role="status" aria-live="polite" hidden>
-      <p class="result-title">Shortened URL ready</p>
+      <p class="result-title">Selected short URL</p>
       <p class="result-detail">
         Selected: <code id="result-short-url"></code> for <span id="result-target-url"></span>
       </p>
@@ -231,6 +231,10 @@
         }
       }
 
+      function shortHash(input, length) {
+        return hashString(input).toString(36).slice(0, length);
+      }
+
       function buildFiveSuggestions(parsedUrl) {
         var hostParts = parsedUrl.hostname.replace(/^www\./i, '').split('.');
         var hostSlug = slugifySegment(hostParts[0] || 'site', 'site');
@@ -238,30 +242,13 @@
         var lastPath = pathParts.length > 0 ? pathParts[pathParts.length - 1] : 'link';
         var pathSlug = slugifySegment(lastPath, 'link');
 
-        var h1 = hashString(parsedUrl.href + '#1').toString(36).slice(0, 4).padEnd(4, '0');
-        var h2 = hashString(parsedUrl.href + '#2').toString(36).slice(0, 4).padEnd(4, '2');
-        var h3 = hashString(parsedUrl.href + '#3').toString(36).slice(0, 6).padEnd(6, '3');
-        var h4 = hashString(parsedUrl.href + '#4').toString(36).slice(0, 4).padEnd(4, '4');
-
-        var candidates = [
+        return [
           '/s/' + hostSlug + '-' + pathSlug,
-          '/s/' + pathSlug + '-' + h1,
-          '/s/' + hostSlug + '-' + h2,
-          '/s/' + h3,
-          '/s/go-' + h4
+          '/s/' + pathSlug + '-' + shortHash(parsedUrl.href + '#1', 4),
+          '/s/' + hostSlug + '-' + shortHash(parsedUrl.href + '#2', 4),
+          '/s/' + shortHash(parsedUrl.href + '#3', 6),
+          '/s/go-' + shortHash(parsedUrl.href + '#4', 4)
         ];
-
-        var unique = [];
-        candidates.forEach(function (candidate, idx) {
-          var item = candidate;
-          var suffix = idx + 1;
-          while (unique.indexOf(item) !== -1) {
-            item = candidate + '-' + suffix;
-            suffix++;
-          }
-          unique.push(item);
-        });
-        return unique.slice(0, 5);
       }
 
       function renderSuggestions(parsedUrl) {
@@ -346,11 +333,6 @@
       }
 
       listEl.addEventListener('change', showSelectedResult);
-      listEl.addEventListener('click', function (event) {
-        if (event.target && event.target.closest('.suggestion-option')) {
-          showSelectedResult();
-        }
-      });
 
       form.addEventListener('submit', function (event) {
         event.preventDefault();
