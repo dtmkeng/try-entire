@@ -1,0 +1,48 @@
+{
+  "cli_version": "0.13.2",
+  "checkpoint_id": "01M7F7642YK9CNN3CPX980N53M",
+  "session_id": "f9b778fc-5b47-4c7a-9390-dd471e1e740b",
+  "strategy": "manual-commit",
+  "created_at": "2026-11-15T09:04:05.628595Z",
+  "branch": "add-traffic-graph-dashboard",
+  "checkpoints_count": 2,
+  "files_touched": [
+    "dashboard.html"
+  ],
+  "agent": "Antigravity",
+  "model": "gemini-4-argon-high",
+  "turn_id": "6db4e28dde30",
+  "checkpoint_transcript_start": 142,
+  "transcript_lines_at_start": 142,
+  "token_usage": {
+    "input_tokens": 32941,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 1141065,
+    "output_tokens": 7760,
+    "api_call_count": 13
+  },
+  "session_token_usage": {
+    "input_tokens": 404504,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 3852058,
+    "output_tokens": 28477,
+    "api_call_count": 76
+  },
+  "redaction": {
+    "replacements": 2,
+    "layers": {
+      "betterleaks": 2,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 0,
+      "credentialed_uri": 0,
+      "entropy": 0,
+      "key_context": 0,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  },
+  "session_metrics": {
+    "turn_count": 8
+  }
+}
