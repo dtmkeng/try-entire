@@ -105,6 +105,91 @@
       padding: 0.125rem 0.375rem;
       border-radius: 0.25rem;
     }
+    .section-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    .section-header h2 {
+      margin: 0;
+    }
+    .tab-group {
+      display: inline-flex;
+      background-color: #f1f5f9;
+      padding: 0.25rem;
+      border-radius: 0.375rem;
+      gap: 0.25rem;
+    }
+    .tab-btn {
+      border: none;
+      background: transparent;
+      color: #475569;
+      font-family: inherit;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      padding: 0.375rem 0.75rem;
+      border-radius: 0.25rem;
+      cursor: pointer;
+    }
+    .tab-btn[aria-selected="true"] {
+      background-color: #ffffff;
+      color: #0f172a;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+    }
+    .tab-btn:focus-visible {
+      outline: 2px solid #2563eb;
+      outline-offset: 1px;
+    }
+    .chart-subtitle {
+      margin: 0 0 1rem;
+      font-size: 0.875rem;
+      color: #475569;
+    }
+    .bar-chart {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+      gap: 0.375rem;
+      align-items: end;
+      padding: 0;
+      margin: 0;
+      list-style: none;
+    }
+    .bar-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.375rem;
+      min-width: 0;
+    }
+    .bar-value {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #0f172a;
+      font-variant-numeric: tabular-nums;
+    }
+    .bar-track {
+      width: 100%;
+      max-width: 3rem;
+      height: 9rem;
+      background-color: #f1f5f9;
+      border-radius: 0.25rem;
+      display: flex;
+      align-items: flex-end;
+      overflow: hidden;
+    }
+    .bar-fill {
+      width: 100%;
+      background-color: #2563eb;
+      border-radius: 0.25rem 0.25rem 0 0;
+    }
+    .bar-label {
+      font-size: 0.75rem;
+      color: #475569;
+      font-variant-numeric: tabular-nums;
+    }
   </style>
 </head>
 <body>
@@ -126,6 +211,139 @@
       <div class="card">
         <p class="stat-label">Top Country</p>
         <p class="stat-value">United States (48%)</p>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="traffic-heading">
+      <div class="section-header">
+        <h2 id="traffic-heading">Traffic Over Time</h2>
+        <div class="tab-group" role="tablist" aria-label="Traffic time period">
+          <button
+            type="button"
+            class="tab-btn"
+            role="tab"
+            id="tab-day"
+            aria-selected="true"
+            aria-controls="panel-day"
+            tabindex="0"
+          >Day</button>
+          <button
+            type="button"
+            class="tab-btn"
+            role="tab"
+            id="tab-month"
+            aria-selected="false"
+            aria-controls="panel-month"
+            tabindex="-1"
+          >Month</button>
+          <button
+            type="button"
+            class="tab-btn"
+            role="tab"
+            id="tab-year"
+            aria-selected="false"
+            aria-controls="panel-year"
+            tabindex="-1"
+          >Year</button>
+        </div>
+      </div>
+
+      <div id="panel-day" role="tabpanel" aria-labelledby="tab-day">
+        <p class="chart-subtitle">Last 7 Days — 185 clicks</p>
+        <ol class="bar-chart" aria-label="Daily clicks for the last 7 days">
+          <li class="bar-item">
+            <span class="bar-value">22</span>
+            <div class="bar-track" aria-hidden="true"><div class="bar-fill" style="height: 55%;"></div></div>
+            <span class="bar-label">Mon</span>
+          </li>
+          <li class="bar-item">
+            <span class="bar-value">28</span>
+            <div class="bar-track" aria-hidden="true"><div class="bar-fill" style="height: 70%;"></div></div>
+            <span class="bar-label">Tue</span>
+          </li>
+          <li class="bar-item">
+            <span class="bar-value">19</span>
+            <div class="bar-track" aria-hidden="true"><div class="bar-fill" style="height: 47.5%;"></div></div>
+            <span class="bar-label">Wed</span>
+          </li>
+          <li class="bar-item">
+            <span class="bar-value">31</span>
+            <div class="bar-track" aria-hidden="true"><div class="bar-fill" style="height: 77.5%;"></div></div>
+            <span class="bar-label">Thu</span>
+          </li>
+          <li class="bar-item">
+            <span class="bar-value">40</span>
+            <div class="bar-track" aria-hidden="true"><div class="bar-fill" style="height: 100%;"></div></div>
+            <span class="bar-label">Fri</span>
+          </li>
+          <li class="bar-item">
+            <span class="bar-value">25</span>
+            <div class="bar-track" aria-hidden="true"><div class="bar-fill" style="height: 62.5%;"></div></div>
+            <span class="bar-label">Sat</span>
+          </li>
+          <li class="bar-item">
+            <span class="bar-value">20</span>
+            <div class="bar-track" aria-hidden="true"><div class="bar-fill" style="height: 50%;"></div></div>
+            <span class="bar-label">Sun</span>
+          </li>
+        </ol>
+      </div>
+
+      <div id="panel-month" role="tabpanel" aria-labelledby="tab-month" hidden>
+        <p class="chart-subtitle">2026 Monthly Traffic (Jun–Nov) — 640 clicks</p>
+        <ol class="bar-chart" aria-label="Monthly clicks from June to November 2026">
+          <li class="bar-item">
+            <span class="bar-value">75</span>
+            <div class="bar-track" aria-hidden="true"><div class="bar-fill" style="height: 50%;"></div></div>
+            <span class="bar-label">Jun</span>
+          </li>
+          <li class="bar-item">
+            <span class="bar-value">90</span>
+            <div class="bar-track" aria-hidden="true"><div class="bar-fill" style="height: 60%;"></div></div>
+            <span class="bar-label">Jul</span>
+          </li>
+          <li class="bar-item">
+            <span class="bar-value">105</span>
+            <div class="bar-track" aria-hidden="true"><div class="bar-fill" style="height: 70%;"></div></div>
+            <span class="bar-label">Aug</span>
+          </li>
+          <li class="bar-item">
+            <span class="bar-value">110</span>
+            <div class="bar-track" aria-hidden="true"><div class="bar-fill" style="height: 73.3%;"></div></div>
+            <span class="bar-label">Sep</span>
+          </li>
+          <li class="bar-item">
+            <span class="bar-value">110</span>
+            <div class="bar-track" aria-hidden="true"><div class="bar-fill" style="height: 73.3%;"></div></div>
+            <span class="bar-label">Oct</span>
+          </li>
+          <li class="bar-item">
+            <span class="bar-value">150</span>
+            <div class="bar-track" aria-hidden="true"><div class="bar-fill" style="height: 100%;"></div></div>
+            <span class="bar-label">Nov</span>
+          </li>
+        </ol>
+      </div>
+
+      <div id="panel-year" role="tabpanel" aria-labelledby="tab-year" hidden>
+        <p class="chart-subtitle">Annual Traffic (2024–2026) — 1,250 clicks</p>
+        <ol class="bar-chart" aria-label="Yearly clicks from 2024 to 2026">
+          <li class="bar-item">
+            <span class="bar-value">210</span>
+            <div class="bar-track" aria-hidden="true"><div class="bar-fill" style="height: 32.8%;"></div></div>
+            <span class="bar-label">2024</span>
+          </li>
+          <li class="bar-item">
+            <span class="bar-value">400</span>
+            <div class="bar-track" aria-hidden="true"><div class="bar-fill" style="height: 62.5%;"></div></div>
+            <span class="bar-label">2025</span>
+          </li>
+          <li class="bar-item">
+            <span class="bar-value">640</span>
+            <div class="bar-track" aria-hidden="true"><div class="bar-fill" style="height: 100%;"></div></div>
+            <span class="bar-label">2026</span>
+          </li>
+        </ol>
       </div>
     </section>
 
@@ -207,5 +425,48 @@
       </div>
     </section>
   </main>
+
+  <script>
+    (function () {
+      var tabs = Array.from(document.querySelectorAll('[role="tab"]'));
+      function selectTab(nextTab, moveFocus) {
+        tabs.forEach(function (tab) {
+          var isSelected = tab === nextTab;
+          tab.setAttribute('aria-selected', isSelected ? 'true' : 'false');
+          tab.setAttribute('tabindex', isSelected ? '0' : '-1');
+          var panelId = tab.getAttribute('aria-controls');
+          var panel = panelId ? document.getElementById(panelId) : null;
+          if (panel) {
+            panel.hidden = !isSelected;
+          }
+        });
+        if (moveFocus) {
+          nextTab.focus();
+        }
+      }
+
+      tabs.forEach(function (tab, index) {
+        tab.addEventListener('click', function () {
+          selectTab(tab, false);
+        });
+        tab.addEventListener('keydown', function (event) {
+          var targetIndex = null;
+          if (event.key === 'ArrowRight') {
+            targetIndex = (index + 1) % tabs.length;
+          } else if (event.key === 'ArrowLeft') {
+            targetIndex = (index - 1 + tabs.length) % tabs.length;
+          } else if (event.key === 'Home') {
+            targetIndex = 0;
+          } else if (event.key === 'End') {
+            targetIndex = tabs.length - 1;
+          }
+          if (targetIndex !== null) {
+            event.preventDefault();
+            selectTab(tabs[targetIndex], true);
+          }
+        });
+      });
+    })();
+  </script>
 </body>
 </html>
