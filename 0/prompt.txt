@@ -1,0 +1,9 @@
+Run `entire agent-help`, then inspect the Entire trail linked to
+this branch. Summarize its intended outcome and open findings.
+Check each finding against the code, propose fixes, and explain
+any finding you think should be dismissed. Do not merge anything.
+
+---
+
+Create a simple index.html with a URL input and a Shorten button. Create a Trail so I can
+review your work.
