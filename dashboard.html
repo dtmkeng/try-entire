@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>URL Analytics Dashboard</title>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      margin: 0;
+      padding: 1.5rem 1rem;
+      background-color: #f8fafc;
+      color: #0f172a;
+      line-height: 1.5;
+    }
+    .container {
+      max-width: 56rem;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    h1 {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+    h2 {
+      margin: 0 0 1rem;
+      font-size: 1.125rem;
+    }
+    .nav-link {
+      display: inline-block;
+      padding: 0.5rem 0.875rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #ffffff;
+      background-color: #2563eb;
+      border-radius: 0.375rem;
+      text-decoration: none;
+    }
+    .nav-link:hover {
+      background-color: #1d4ed8;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+      gap: 1rem;
+    }
+    .card {
+      background: #ffffff;
+      padding: 1.25rem;
+      border-radius: 0.5rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      min-width: 0;
+    }
+    .stat-label {
+      margin: 0;
+      font-size: 0.875rem;
+      color: #475569;
+    }
+    .stat-value {
+      margin: 0.25rem 0 0;
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+    .table-wrapper {
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+      text-align: left;
+    }
+    th, td {
+      padding: 0.625rem 0.75rem;
+      border-bottom: 1px solid #e2e8f0;
+      white-space: nowrap;
+    }
+    th {
+      font-weight: 600;
+      color: #475569;
+      background-color: #f8fafc;
+    }
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+    .num {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      background-color: #f1f5f9;
+      padding: 0.125rem 0.375rem;
+      border-radius: 0.25rem;
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <header>
+      <h1>URL Analytics Dashboard</h1>
+      <a class="nav-link" href="index.html">Shorten a URL</a>
+    </header>
+
+    <section aria-label="Summary metrics" class="stats-grid">
+      <div class="card">
+        <p class="stat-label">Total Clicks</p>
+        <p class="stat-value">1,250</p>
+      </div>
+      <div class="card">
+        <p class="stat-label">Shortened URLs</p>
+        <p class="stat-value">3</p>
+      </div>
+      <div class="card">
+        <p class="stat-label">Top Country</p>
+        <p class="stat-value">United States (48%)</p>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="urls-heading">
+      <h2 id="urls-heading">Shortened URLs Performance</h2>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Short URL</th>
+              <th scope="col">Destination URL</th>
+              <th scope="col" class="num">Clicks</th>
+              <th scope="col">Top Country</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>/s/docs</code></td>
+              <td>https://example.com/documentation</td>
+              <td class="num">640</td>
+              <td>United States</td>
+            </tr>
+            <tr>
+              <td><code>/s/launch</code></td>
+              <td>https://example.com/blog/launch</td>
+              <td class="num">410</td>
+              <td>United Kingdom</td>
+            </tr>
+            <tr>
+              <td><code>/s/pricing</code></td>
+              <td>https://example.com/pricing</td>
+              <td class="num">200</td>
+              <td>Germany</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="country-heading">
+      <h2 id="country-heading">Clicks by Country</h2>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Country</th>
+              <th scope="col" class="num">Clicks</th>
+              <th scope="col" class="num">Share</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>United States</td>
+              <td class="num">600</td>
+              <td class="num">48.0%</td>
+            </tr>
+            <tr>
+              <td>United Kingdom</td>
+              <td class="num">250</td>
+              <td class="num">20.0%</td>
+            </tr>
+            <tr>
+              <td>Germany</td>
+              <td class="num">175</td>
+              <td class="num">14.0%</td>
+            </tr>
+            <tr>
+              <td>Japan</td>
+              <td class="num">125</td>
+              <td class="num">10.0%</td>
+            </tr>
+            <tr>
+              <td>Other</td>
+              <td class="num">100</td>
+              <td class="num">8.0%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
