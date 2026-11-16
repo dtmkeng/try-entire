@@ -43,7 +43,8 @@
       display: flex;
       gap: 0.5rem;
     }
-    input[type="url"] {
+    input[type="url"],
+    input[type="text"] {
       flex: 1;
       min-width: 0;
       padding: 0.5rem 0.75rem;
@@ -148,6 +149,15 @@
         <button type="submit">Shorten</button>
       </div>
 
+      <label for="custom-alias">Custom alias (optional)</label>
+      <input
+        id="custom-alias"
+        name="custom_alias"
+        type="text"
+        placeholder="my-custom-slug"
+        maxlength="12"
+      >
+
       <fieldset id="suggestions-fieldset" hidden>
         <legend>Suggested shortened URLs (choose 1 of 5)</legend>
         <div id="suggestions-list" class="suggestions-list"></div>
@@ -166,12 +176,14 @@
     (function () {
       var form = document.getElementById('shorten-form');
       var urlInput = document.getElementById('url-input');
+      var aliasInput = document.getElementById('custom-alias');
       var fieldset = document.getElementById('suggestions-fieldset');
       var listEl = document.getElementById('suggestions-list');
       var resultBox = document.getElementById('result-box');
       var resultShortUrl = document.getElementById('result-short-url');
       var resultTargetUrl = document.getElementById('result-target-url');
       var lastNormalizedUrl = '';
+      var lastStateKey = '';
 
       function hashString(input) {
         var h = 2166136261;
@@ -212,24 +224,35 @@
         return hashString(input).toString(36).slice(0, length);
       }
 
-      function buildFiveSuggestions(parsedUrl) {
+      function buildFiveSuggestions(parsedUrl, customAliasSlug) {
         var hostParts = parsedUrl.hostname.replace(/^www\./i, '').split('.');
         var hostSlug = slugifySegment(hostParts[0] || 'site', 'site');
         var pathParts = parsedUrl.pathname.split('/').filter(Boolean);
         var lastPath = pathParts.length > 0 ? pathParts[pathParts.length - 1] : 'link';
         var pathSlug = slugifySegment(lastPath, 'link');
 
-        return [
+        var defaults = [
           '/s/' + hostSlug + '-' + pathSlug,
           '/s/' + pathSlug + '-' + shortHash(parsedUrl.href + '#1', 4),
           '/s/' + hostSlug + '-' + shortHash(parsedUrl.href + '#2', 4),
           '/s/' + shortHash(parsedUrl.href + '#3', 6),
           '/s/go-' + shortHash(parsedUrl.href + '#4', 4)
         ];
+
+        if (!customAliasSlug) {
+          return defaults;
+        }
+
+        var customPath = '/s/' + customAliasSlug;
+        return [customPath].concat(
+          defaults.filter(function (item) {
+            return item !== customPath;
+          })
+        ).slice(0, 5);
       }
 
-      function renderSuggestions(parsedUrl) {
-        var suggestions = buildFiveSuggestions(parsedUrl);
+      function renderSuggestions(parsedUrl, customAliasSlug) {
+        var suggestions = buildFiveSuggestions(parsedUrl, customAliasSlug);
         listEl.textContent = '';
 
         suggestions.forEach(function (shortPath, index) {
@@ -262,40 +285,56 @@
         return checked ? checked.value : '';
       }
 
+      function clearSuggestions() {
+        lastNormalizedUrl = '';
+        lastStateKey = '';
+        listEl.textContent = '';
+        fieldset.hidden = true;
+        resultBox.hidden = true;
+      }
+
       function updateSuggestionsFromInput() {
         urlInput.setCustomValidity('');
+        aliasInput.setCustomValidity('');
+
+        var rawAlias = aliasInput.value.trim();
+        var customAliasSlug = rawAlias ? slugifySegment(rawAlias, '') : '';
+        if (rawAlias && !customAliasSlug) {
+          aliasInput.setCustomValidity('Custom alias must contain letters or numbers.');
+        }
+
         var raw = urlInput.value;
         if (!raw.trim()) {
-          lastNormalizedUrl = '';
-          listEl.textContent = '';
-          fieldset.hidden = true;
-          resultBox.hidden = true;
+          clearSuggestions();
           return null;
         }
 
         var parsed = parseHttpUrl(raw);
         if (!parsed) {
-          lastNormalizedUrl = '';
-          listEl.textContent = '';
-          fieldset.hidden = true;
-          resultBox.hidden = true;
+          clearSuggestions();
           if (urlInput.validity.valid) {
             urlInput.setCustomValidity('Please enter an http:// or https:// URL.');
           }
           return null;
         }
 
-        if (parsed.href !== lastNormalizedUrl) {
+        if (rawAlias && !customAliasSlug) {
+          clearSuggestions();
+          return null;
+        }
+
+        var nextStateKey = parsed.href + '\n' + customAliasSlug;
+        if (nextStateKey !== lastStateKey) {
           lastNormalizedUrl = parsed.href;
-          renderSuggestions(parsed);
+          lastStateKey = nextStateKey;
+          renderSuggestions(parsed, customAliasSlug);
           resultBox.hidden = true;
         }
         return parsed;
       }
 
-      urlInput.addEventListener('input', function () {
-        updateSuggestionsFromInput();
-      });
+      urlInput.addEventListener('input', updateSuggestionsFromInput);
+      aliasInput.addEventListener('input', updateSuggestionsFromInput);
 
       function showSelectedResult() {
         if (!lastNormalizedUrl) {
@@ -320,7 +359,7 @@
         showSelectedResult();
       });
 
-      if (urlInput.value) {
+      if (urlInput.value || aliasInput.value) {
         updateSuggestionsFromInput();
       }
     })();
