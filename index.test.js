@@ -3,6 +3,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
+const { validateShortenInput } = require('./validate-shorten-input');
 
 function createHarness() {
   const html = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
@@ -99,7 +100,7 @@ function createHarness() {
     }
   };
 
-  vm.runInNewContext(scriptMatch[1], { document, URL, Math });
+  vm.runInNewContext(scriptMatch[1], { document, validateShortenInput });
 
   function getRenderedChoices() {
     return elements['suggestions-list'].children.map((label) => ({
@@ -219,5 +220,86 @@ test('keeps all 5 suggestions distinct when custom alias matches default host-pa
   assert.deepEqual(
     choices.map((c) => c.value),
     defaultValues
+  );
+});
+
+test('validateShortenInput accepts valid payload and matches UI suggestions', () => {
+  const { elements, getRenderedChoices } = createHarness();
+  elements['url-input'].value = 'https://example.com/blog/launch';
+  elements['custom-alias'].value = 'Launch 26';
+  elements['custom-alias'].dispatchEvent({ type: 'input' });
+
+  const uiChoices = getRenderedChoices().map((c) => c.value);
+  const result = validateShortenInput({
+    url: 'https://example.com/blog/launch',
+    custom_alias: 'Launch 26',
+    short_url: uiChoices[1]
+  });
+
+  assert.equal(result.valid, true);
+  assert.deepEqual(result.data, {
+    url: 'https://example.com/blog/launch',
+    custom_alias: 'launch-26',
+    short_url: uiChoices[1],
+    suggestions: uiChoices
+  });
+});
+
+test('validateShortenInput defaults short_url to first suggestion when omitted', () => {
+  const result = validateShortenInput({
+    url: 'https://example.com/docs'
+  });
+
+  assert.equal(result.valid, true);
+  assert.equal(result.data.url, 'https://example.com/docs');
+  assert.equal(result.data.custom_alias, '');
+  assert.equal(result.data.short_url, '/s/example-docs');
+  assert.equal(result.data.suggestions.length, 5);
+});
+
+test('validateShortenInput rejects invalid payloads, URLs, aliases, and unapproved short_url', () => {
+  assert.deepEqual(validateShortenInput(null), {
+    valid: false,
+    field: 'body',
+    error: 'Request payload must be an object.'
+  });
+
+  assert.deepEqual(validateShortenInput([]), {
+    valid: false,
+    field: 'body',
+    error: 'Request payload must be an object.'
+  });
+
+  assert.deepEqual(validateShortenInput({ url: 'javascript:alert(1)' }), {
+    valid: false,
+    field: 'url',
+    error: 'Please enter an http:// or https:// URL.'
+  });
+
+  assert.deepEqual(validateShortenInput({ url: 123 }), {
+    valid: false,
+    field: 'url',
+    error: 'Please enter an http:// or https:// URL.'
+  });
+
+  assert.deepEqual(validateShortenInput({ url: 'https://example.com', custom_alias: 42 }), {
+    valid: false,
+    field: 'custom_alias',
+    error: 'Custom alias must be a string.'
+  });
+
+  assert.deepEqual(validateShortenInput({ url: 'https://example.com', custom_alias: '!!!' }), {
+    valid: false,
+    field: 'custom_alias',
+    error: 'Custom alias must contain letters or numbers.'
+  });
+
+  assert.deepEqual(
+    validateShortenInput({ url: 'https://example.com', short_url: '/s/not-in-suggestions' }),
+    {
+      valid: false,
+      field: 'short_url',
+      error: 'Selected short URL must be one of the 5 suggested choices.'
+    }
   );
 });
