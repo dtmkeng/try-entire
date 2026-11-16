@@ -1,0 +1,18 @@
+LGTM
+
+---
+
+[Goal]
+Review and extend the functionality of [insert feature name from Phase 2-3, e.g., the discount calculation function].
+
+[Instructions]
+1. Do NOT read all files in the repository. First, use Entire Agentic Search and Code Graph to inspect previous session history:
+   - Why was this module designed this way?
+   - What key decisions or edge cases were agreed upon in earlier commits?
+2. Summarize the top 3 historical decisions you found before writing any code.
+3. Add a new requirement: [insert new requirement, e.g., support stacking up to 2 discount coupons] while strictly following the existing architecture.
+4. Write additional unit tests and run the test suite until everything passes.
+
+---
+
+can you create trail i will review you work
