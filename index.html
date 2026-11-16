@@ -172,6 +172,7 @@
     </div>
   </main>
 
+  <script src="validate-shorten-input.js"></script>
   <script>
     (function () {
       var form = document.getElementById('shorten-form');
@@ -185,74 +186,7 @@
       var lastNormalizedUrl = '';
       var lastStateKey = '';
 
-      function hashString(input) {
-        var h = 2166136261;
-        for (var i = 0; i < input.length; i++) {
-          h ^= input.charCodeAt(i);
-          h = Math.imul(h, 16777619);
-        }
-        return h >>> 0;
-      }
-
-      function slugifySegment(value, fallback) {
-        var cleaned = value
-          .toLowerCase()
-          .replace(/[^a-z0-9]+/g, '-')
-          .replace(/^-+|-+$/g, '')
-          .slice(0, 12)
-          .replace(/-+$/g, '');
-        return cleaned || fallback;
-      }
-
-      function parseHttpUrl(raw) {
-        var trimmed = raw.trim();
-        if (!trimmed) {
-          return null;
-        }
-        try {
-          var parsed = new URL(trimmed);
-          if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
-            return null;
-          }
-          return parsed;
-        } catch (err) {
-          return null;
-        }
-      }
-
-      function shortHash(input, length) {
-        return hashString(input).toString(36).slice(0, length);
-      }
-
-      function buildFiveSuggestions(parsedUrl, customAliasSlug) {
-        var hostParts = parsedUrl.hostname.replace(/^www\./i, '').split('.');
-        var hostSlug = slugifySegment(hostParts[0] || 'site', 'site');
-        var pathParts = parsedUrl.pathname.split('/').filter(Boolean);
-        var lastPath = pathParts.length > 0 ? pathParts[pathParts.length - 1] : 'link';
-        var pathSlug = slugifySegment(lastPath, 'link');
-
-        var defaults = [
-          '/s/' + hostSlug + '-' + pathSlug,
-          '/s/' + pathSlug + '-' + shortHash(parsedUrl.href + '#1', 4),
-          '/s/' + hostSlug + '-' + shortHash(parsedUrl.href + '#2', 4),
-          '/s/' + shortHash(parsedUrl.href + '#3', 6),
-          '/s/go-' + shortHash(parsedUrl.href + '#4', 4)
-        ];
-
-        if (!customAliasSlug) {
-          return defaults;
-        }
-
-        var customPath = '/s/' + customAliasSlug;
-        return [customPath].concat(
-          defaults.filter(function (item) {
-            return item !== customPath;
-          })
-        ).slice(0, 5);
-      }
-
-      function renderSuggestions(parsedUrl, customAliasSlug) {
-        var suggestions = buildFiveSuggestions(parsedUrl, customAliasSlug);
+      function renderSuggestions(suggestions) {
         listEl.textContent = '';
 
         suggestions.forEach(function (shortPath, index) {
@@ -297,40 +231,29 @@
         urlInput.setCustomValidity('');
         aliasInput.setCustomValidity('');
 
-        var rawAlias = aliasInput.value.trim();
-        var customAliasSlug = rawAlias ? slugifySegment(rawAlias, '') : '';
-        if (rawAlias && !customAliasSlug) {
-          aliasInput.setCustomValidity('Custom alias must contain letters or numbers.');
-        }
+        var validation = validateShortenInput({
+          url: urlInput.value,
+          custom_alias: aliasInput.value
+        });
 
-        var raw = urlInput.value;
-        if (!raw.trim()) {
+        if (!validation.valid) {
           clearSuggestions();
-          return null;
-        }
-
-        var parsed = parseHttpUrl(raw);
-        if (!parsed) {
-          clearSuggestions();
-          if (urlInput.validity.valid) {
-            urlInput.setCustomValidity('Please enter an http:// or https:// URL.');
+          if (validation.field === 'custom_alias') {
+            aliasInput.setCustomValidity(validation.error);
+          } else if (urlInput.value.trim() && urlInput.validity.valid) {
+            urlInput.setCustomValidity(validation.error);
           }
           return null;
         }
 
-        if (rawAlias && !customAliasSlug) {
-          clearSuggestions();
-          return null;
-        }
-
-        var nextStateKey = parsed.href + '\n' + customAliasSlug;
+        var nextStateKey = validation.data.url + '\n' + validation.data.custom_alias;
         if (nextStateKey !== lastStateKey) {
-          lastNormalizedUrl = parsed.href;
+          lastNormalizedUrl = validation.data.url;
           lastStateKey = nextStateKey;
-          renderSuggestions(parsed, customAliasSlug);
+          renderSuggestions(validation.data.suggestions);
           resultBox.hidden = true;
         }
-        return parsed;
+        return validation.data;
       }
 
       urlInput.addEventListener('input', updateSuggestionsFromInput);
