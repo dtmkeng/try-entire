@@ -1,0 +1,9 @@
+[Task]
+Implement an input validation utility for the new API endpoint.
+
+[Harness Execution Rules]
+- Use Entire Code Graph to fetch only the relevant schema and route files.
+- Complete the implementation and unit tests within 3 iterations.
+- After writing the code, execute the local test suite and run Entire Evals.
+- If any High-severity Findings or test failures occur, analyze the error logs and self-correct immediately.
+- Stop execution and report back when all checks pass, or after 5 failed attempts with a root-cause summary.
